@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver as wd
 from bs4 import BeautifulSoup
-import pandas as pd
 from IPython.display import display
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import pandas as pd
+import datetime
 import time
 import re
+
+font_location = "C:\\Users\\user\\Desktop\\python_korean\\스플래툰K[Ver.3.0].ttf"
+font_name = fm.FontProperties(fname=font_location).get_name()
+matplotlib.rc("font", family=font_name)
 
 
 def isHangul(text):
@@ -55,21 +63,51 @@ for comment in youtube_comments:
     comment = comment.replace("\n", '')
     comments.append(comment)
 
-print(users)
-print(comments)
-
 pd_data = {"ID": users, "Comment": comments}
 youtube_pd = pd.DataFrame(pd_data)
+count_hangul = 0
+# 화면 출력 코드
 display(youtube_pd)
+count_entire = youtube_pd.shape[0]
 
-'''
-for x, y in zip(comments, users):
-    if isHangul(x) is False:
-        comments.remove(x)
-        users.remove(y)
+for x in youtube_pd["Comment"]:
+    if isHangul(x) is True:
+        count_hangul += 1
 
-print(users)
-print(comments)
-'''
+count_english = count_entire - count_hangul
+print("한글 : {} , 영어 : {} 전체 : {}" .format(count_hangul, count_english, count_entire))
+dt = datetime.datetime.now()
+current_date = "{}.{}.{}".format(str(dt.year), str(dt.month), str(dt.day))
+current_data = "{} {} {} {}\n".format(current_date, count_entire, count_english, count_hangul)
+flag = 0
 
+with open("comment_data.txt", "r") as f:
+    lines = f.readlines()
+    for line in lines:
+        if current_date in line:
+            flag = 1
+            break
+
+if flag == 0:
+    with open("comment_data.txt", "a") as f:
+        f.write(current_data)
+
+date = list()
+date.append(current_date)
+date.append("2020.2.7")
+list_hangul = [count_hangul, 100]
+list_english = [count_english, 1400]
+list_entire = [count_entire, 1600]
+
+plt.plot(date, list_entire, label='전체')
+plt.plot(date, list_english, label="영어댓글")
+plt.plot(date, list_hangul, label="한글댓글")
+
+
+plt.xlabel("날짜")
+plt.ylabel("댓글수")
+plt.title("BTS (방탄소년단) MAP OF THE SOUL : 7 'Outro : Ego' Comeback Trailer")
+plt.legend()
+
+plt.show()
 
