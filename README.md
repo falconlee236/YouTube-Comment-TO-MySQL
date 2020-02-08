@@ -4,7 +4,7 @@ This program made by python language program, which works searching youtube kore
 from using selenium and google webdriver
 
 As using these data, I made list made by numpy module and pandas
-![code](./img/code.png)
+![code](./img/code.PNG)
 
 Using this data and list, I made this graph
-![graph](./img/graph.png)
+![graph](./img/graph.PNG)
