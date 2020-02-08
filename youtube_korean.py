@@ -93,21 +93,34 @@ if flag == 0:
         f.write(current_data)
 
 date = list()
-date.append(current_date)
-date.append("2020.2.7")
-list_hangul = [count_hangul, 100]
-list_english = [count_english, 1400]
-list_entire = [count_entire, 1600]
+list_hangul = list()
+list_english = list()
+list_entire = list()
+data = list()
+count = 0
+with open("comment_data.txt", "r") as f:
+    lines = f.readlines()
+    for line in lines:
+        count += 1
+        data = line.split()
+        date.append(data[0])
+        list_entire.append(int(data[1]))
+        list_english.append(int(data[2]))
+        list_hangul.append(int(data[3]))
 
-plt.plot(date, list_entire, label='전체')
-plt.plot(date, list_english, label="영어댓글")
-plt.plot(date, list_hangul, label="한글댓글")
-
-
+fig = plt.figure()
+ax1 = fig.add_subplot(1, 3, 1)
+ax2 = fig.add_subplot(1, 3, 2)
+ax3 = fig.add_subplot(1, 3, 3)
+ax1.plot(date, list_entire, label='전체')
+ax2.plot(date, list_english, label="영어댓글")
+ax3.plot(date, list_hangul, label="한글댓글")
 plt.xlabel("날짜")
 plt.ylabel("댓글수")
 plt.title("BTS (방탄소년단) MAP OF THE SOUL : 7 'Outro : Ego' Comeback Trailer")
-plt.legend()
-
+ax1.legend()
+ax2.legend()
+ax3.legend()
 plt.show()
+
 
