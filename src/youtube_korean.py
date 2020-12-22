@@ -132,10 +132,3 @@ if __name__ == "__main__":
             list_hangul.append(int(data[3]))
 
     make_plot(date, list_entire, list_english, list_hangul)
-
-
-
-
-
-
-
