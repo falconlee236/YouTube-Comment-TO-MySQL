@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fba9ec64-7c14-4d02-8904-43d3138236a5" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/chromedriver.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/comment_data.txt" beforeDir="false" afterPath="$PROJECT_DIR$/comment_data.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/youtube_korean.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/youtube_korean.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/스플래툰K[Ver.3.0].ttf" beforeDir="false" />
-    </list>
+    <list default="true" id="fba9ec64-7c14-4d02-8904-43d3138236a5" name="Default" comment="refactoring" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -167,6 +161,14 @@
       <option name="presentableId" value="Default" />
       <updated>1578758175504</updated>
     </task>
+    <task id="LOCAL-00001" summary="refactoring">
+      <created>1608641484575</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1608641484575</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -203,6 +205,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactoring" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/youtube_korean.py">
