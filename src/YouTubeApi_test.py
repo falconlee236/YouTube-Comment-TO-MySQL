@@ -1,16 +1,13 @@
 import pickle
-import csv
 import os
-
-import google.oauth2.credentials
+import csv
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # your OAuth 2.0 client ID json file
 CLIENT_SECRETS_FILE = "client_secret_lsy.json"
-SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
+SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
 
@@ -26,8 +23,8 @@ def get_authenticated_service():
         if credentials and credentials.expired and credentials.refresh_token:
             credentials.refresh(Request())
         else:
-            # Create the flow using the client secrets file from the Google API
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                CLIENT_SECRETS_FILE, SCOPES)
             credentials = flow.run_console()
 
         # Save the credentials for the next run
@@ -37,30 +34,50 @@ def get_authenticated_service():
     return build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
 
-
-def get_video_comments(service, **kwargs):
-    comments = []
-    results = service.commentThreads().list(**kwargs).execute()
-
+def get_video_comments(f_service, **kwargs):
+    comment_list = []
+    results = f_service.commentThreads().list(**kwargs).execute()
+    count = 1
     while results:
-      for item in results['items']:
-        comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
-        comment2 = item['snippet']['topLevelComment']['snippet']['publishedAt']
-        comment3 = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
-        print(comment)
-        print(comment2)
-        print(comment3)
-        print('==============================')
-        comments.append(comment)
+        for item in results['items']:
+            print(count)
+            count += 1
+            comments = {}
+            comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
+            comment2 = item['snippet']['topLevelComment']['snippet']['publishedAt']
+            comment3 = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
+            comments['textDisplay'] = comment
+            comments['publishedAt'] = comment2
+            comments['authorDisplayName'] = comment3
+            if "replies" in item:
+                for i in range(len(item["replies"]["comments"])):
+                    rep_comments = {}
+                    rep_comment = item["replies"]["comments"][i]['snippet']['textDisplay']
+                    rep_comment2 = item["replies"]["comments"][i]['snippet']['publishedAt']
+                    rep_comment3 = item["replies"]["comments"][i]['snippet']['authorDisplayName']
+                    rep_comments['textDisplay'] = rep_comment
+                    rep_comments['publishedAt'] = rep_comment2
+                    rep_comments['authorDisplayName'] = rep_comment3
+                    comments["reply_comment" + str(i + 1)] = rep_comments
 
-      # Check if another page exists
-      if 'nextPageToken' in results:
-        kwargs['pageToken'] = results['nextPageToken']
-        results = service.commentThreads().list(**kwargs).execute()
-      else:
-        break
+            comment_list.append(comments)
 
-    return comments
+        # Check if another page exists
+        if 'nextPageToken' in results:
+            kwargs['pageToken'] = results['nextPageToken']
+            results = service.commentThreads().list(**kwargs).execute()
+        else:
+            break
+
+    return comment_list
+
+
+def write_to_csv(comments):
+    with open('comments.csv', 'w') as comments_file:
+        comments_writer = csv.writer(comments_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        comments_writer.writerow(['Video ID', 'Title', 'Comment'])
+        for row in comments:
+            comments_writer.writerow(row.values())
 
 
 if __name__ == '__main__':
@@ -69,8 +86,19 @@ if __name__ == '__main__':
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     service = get_authenticated_service()
     video_id = input('Enter a video_id: ')
-    get_video_comments(service, part='snippet', videoId=video_id, textFormat='plainText')
+    total = get_video_comments(service, part=['snippet', 'replies'],
+                               videoId=video_id, textFormat='plainText', maxResults=100)
+    write_to_csv(total)
+    for x in total:
+        print(x)
+    print(len(total))
 
+
+# 여백의 미
+#https://youtu.be/TggWNRMPboo
+
+#BTS DYNAMAITE 10,000,000개 댓글 있음
+#https://youtu.be/gdZLi9oWNZg
 '''
 from __future__ import print_function
 from googleapiclient.discovery import build

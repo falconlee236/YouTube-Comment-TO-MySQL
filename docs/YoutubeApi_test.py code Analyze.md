@@ -47,3 +47,68 @@ The console strategy instructs the user to open the authorization URL in their b
 | Returns:     | The OAuth 2.0 credentials for the user.                      |
 | Return type: | [google.oauth2.credentials.Credentials](https://google-auth.readthedocs.io/en/stable/reference/google.oauth2.credentials.html#google.oauth2.credentials.Credentials) |
 
+
+
+#### Using python os environment variable
+
+```python
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+```
+
+**OAUTHLIB_INSECURE_TRANSPORT**
+
+Normally, OAuthLib will raise an `InsecureTransportError` if you attempt to use OAuth2 over HTTP, rather than HTTPS. Setting this environment variable will prevent this error from being raised. This is mostly useful for local testing, or automated tests. *Never* set this variable in production.
+
+
+
+## Comment Results dict
+
+```python
+results = f_service.commentThreads().list(**kwargs).execute()
+results['items']['snippet']['topLevelComment']['snippet']
+```
+
+###### in results, dictionary is made that format.
+
+```python
+"snippet": {
+    "authorDisplayName": string,
+    "authorProfileImageUrl": string,
+    "authorChannelUrl": string,
+    "authorChannelId": {
+      "value": string
+    },
+    "channelId": string,
+    "videoId": string,
+    "textDisplay": string,
+    "textOriginal": string,
+    "parentId": string,
+    "canRate": boolean,
+    "viewerRating": string,
+    "likeCount": unsigned integer,
+    "moderationStatus": string,
+    "publishedAt": datetime,
+    "updatedAt": datetime
+  }
+```
+
+### snippet. format explanation
+
+| `snippet.authorDisplayName`     | `string` The display name of the user who posted the comment. |
+| ------------------------------- | ------------------------------------------------------------ |
+| `snippet.authorProfileImageUrl` | `string` The URL for the avatar of the user who posted the comment. |
+| `snippet.authorChannelUrl`      | `string` The URL of the comment author's YouTube channel, if available. |
+| `snippet.authorChannelId`       | `object` This object encapsulates information about the comment author's YouTube channel, if available. |
+| `snippet.authorChannelId.value` | `string` The ID of the comment author's YouTube channel, if available. |
+| `snippet.channelId`             | `string` The ID of the YouTube channel associated with the comment.If the comment is a video comment, then this property identifies the video's channel, and the `snippet.videoId` property identifies the video.If the comment is a channel comment, then this property identifies the channel that the comment is about. |
+| `snippet.videoId`               | `string` The ID of the video that the comment refers to. This property is only present if the comment was made on a video. |
+| `snippet.textDisplay`           | `string` The comment's text. The text can be retrieved in either plain text or HTML. (The `comments.list` and `commentThreads.list` methods both support a `textFormat` parameter, which specifies the desired text format.)  Note that even the plain text may differ from the original comment text. For example, it may replace video links with video titles. |
+| `snippet.textOriginal`          | `string` The original, raw text of the comment as it was initially posted or last updated. The original text is only returned if it is accessible to the authenticated user, which is only guaranteed if the user is the comment's author. |
+| `snippet.parentId`              | `string` The unique ID of the parent comment. This property is only set if the comment was submitted as a reply to another comment. |
+| `snippet.canRate`               | `boolean` This setting indicates whether the current viewer can rate the comment. |
+| `snippet.viewerRating`          | `string` The rating the viewer has given to this comment. Note that this property does not currently identify `dislike` ratings, though this behavior is subject to change. In the meantime, the property value is `like` if the viewer has rated the comment positively. The value is `none` in all other cases, including the user having given the comment a negative rating or not having rated the comment.  Valid values for this property are:`like``none` |
+| `snippet.likeCount`             | `unsigned integer` The total number of likes (positive ratings) the comment has received. |
+| `snippet.moderationStatus`      | `string` The comment's moderation status. This property is only returned if the API request was authorized by the owner of the channel or the video on which the requested comments were made. In addition, note that this property is not set if the API request used the `id` filter parameter.  Valid values for this property are:`heldForReview``likelySpam``published``rejected` |
+| `snippet.publishedAt`           | `datetime` The date and time when the comment was orignally published. The value is specified in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format. |
+| `snippet.updatedAt`             | `datetime` The date and time when the comment was last updated. The value is specified in [ISO 8601](https://www.w3.org/TR/NOTE-datetime) format. |
+
