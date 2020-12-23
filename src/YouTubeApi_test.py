@@ -4,6 +4,8 @@ import csv
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import pandas
+import pymysql
 
 # your OAuth 2.0 client ID json file
 CLIENT_SECRETS_FILE = "client_secret_lsy.json"
@@ -65,7 +67,7 @@ def get_video_comments(f_service, **kwargs):
         # Check if another page exists
         if 'nextPageToken' in results:
             kwargs['pageToken'] = results['nextPageToken']
-            results = service.commentThreads().list(**kwargs).execute()
+            results = f_service.commentThreads().list(**kwargs).execute()
         else:
             break
 
@@ -74,13 +76,14 @@ def get_video_comments(f_service, **kwargs):
 
 def write_to_csv(comments):
     with open('comments.csv', 'w') as comments_file:
-        comments_writer = csv.writer(comments_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        comments_writer = csv.writer(comments_file, newline='', delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         comments_writer.writerow(['Video ID', 'Title', 'Comment'])
         for row in comments:
             comments_writer.writerow(row.values())
 
 
 if __name__ == '__main__':
+    '''
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -92,6 +95,29 @@ if __name__ == '__main__':
     for x in total:
         print(x)
     print(len(total))
+    '''
+    pd = pandas.read_csv("comments.csv", encoding='cp949', error_bad_lines=False)
+    test_db = pymysql.connect(
+        user='root',
+        passwd='',
+        host='localhost',
+        db='causw',
+        charset='utf8'
+    )
+    cursor = test_db.cursor(pymysql.cursors.DictCursor)
+    '''
+    sql = 'insert into causw.youtube_comment values (%s, %s, %s);'
+    total_list = []
+    for x in range(pd.shape[0]):
+        total_list.append(pd.iloc[x].tolist())
+    print(total_list)
+    cursor.executemany(sql, total_list)
+    test_db.commit()
+    '''
+    cursor.execute("select * from causw.youtube_comment;")
+    result = cursor.fetchall()
+    print(pandas.DataFrame(result))
+
 
 
 # 여백의 미
