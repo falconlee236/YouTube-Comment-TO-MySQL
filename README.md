@@ -13,5 +13,5 @@ Using this data and list, I Insert this data into MySQL table,
 
 ## Prerequisite
 
-[emoji-ver]: https://img.shields.io/badge/emoji-v0.6.0-brightgreen
+https://img.shields.io/badge/emoji-v0.6.0-brightgreen
 
