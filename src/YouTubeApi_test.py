@@ -6,6 +6,14 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import pandas
 import pymysql
+import json
+import re
+from emoji import UNICODE_EMOJI
+
+
+def is_emoji(s):
+    return s in UNICODE_EMOJI
+
 
 # your OAuth 2.0 client ID json file
 CLIENT_SECRETS_FILE = "client_secret_lsy.json"
@@ -45,21 +53,21 @@ def get_video_comments(f_service, **kwargs):
             print(count)
             count += 1
             comments = {}
-            comment = item['snippet']['topLevelComment']['snippet']['textDisplay']
+            comment = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
             comment2 = item['snippet']['topLevelComment']['snippet']['publishedAt']
-            comment3 = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
-            comments['textDisplay'] = comment
+            comment3 = item['snippet']['topLevelComment']['snippet']['textDisplay']
+            comments['authorDisplayName'] = comment
             comments['publishedAt'] = comment2
-            comments['authorDisplayName'] = comment3
+            comments['textDisplay'] = comment3
             if "replies" in item:
                 for i in range(len(item["replies"]["comments"])):
                     rep_comments = {}
-                    rep_comment = item["replies"]["comments"][i]['snippet']['textDisplay']
+                    rep_comment = item["replies"]["comments"][i]['snippet']['authorDisplayName']
                     rep_comment2 = item["replies"]["comments"][i]['snippet']['publishedAt']
-                    rep_comment3 = item["replies"]["comments"][i]['snippet']['authorDisplayName']
-                    rep_comments['textDisplay'] = rep_comment
+                    rep_comment3 = item["replies"]["comments"][i]['snippet']['textDisplay']
+                    rep_comments['authorDisplayName'] = rep_comment
                     rep_comments['publishedAt'] = rep_comment2
-                    rep_comments['authorDisplayName'] = rep_comment3
+                    rep_comments['textDisplay'] = rep_comment3
                     comments["reply_comment" + str(i + 1)] = rep_comments
 
             comment_list.append(comments)
@@ -77,13 +85,35 @@ def get_video_comments(f_service, **kwargs):
 def write_to_csv(comments):
     with open('comments.csv', 'w') as comments_file:
         comments_writer = csv.writer(comments_file, newline='', delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        comments_writer.writerow(['Video ID', 'Title', 'Comment'])
+        comments_writer.writerow(['Video ID', 'Date', 'Comment'])
         for row in comments:
             comments_writer.writerow(row.values())
 
 
+def mysql_connect(data):
+    with open('MySQL_Auth.json') as auth_file:
+        mysql_auth = json.load(auth_file)
+
+        test_db = pymysql.connect(
+            user=mysql_auth["user"],
+            passwd=mysql_auth["passwd"],
+            host=mysql_auth["host"],
+            db=mysql_auth["db"],
+            charset=mysql_auth["charset"]
+        )
+
+        cursor = test_db.cursor(pymysql.cursors.DictCursor)
+        cursor.execute("select count(*) as num from causw.youtube_comment;")
+        if cursor.fetchall()[0]['num'] == 0:
+            sql = 'insert into causw.youtube_comment values (%s, %s, %s, %s);'
+            cursor.executemany(sql, data)
+            test_db.commit()
+        cursor.execute("select * from causw.youtube_comment;")
+        result = cursor.fetchall()
+        print(pandas.DataFrame(result))
+
+
 if __name__ == '__main__':
-    '''
     # When running locally, disable OAuthlib's HTTPs verification. When
     # running in production *do not* leave this option enabled.
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -91,20 +121,41 @@ if __name__ == '__main__':
     video_id = input('Enter a video_id: ')
     total = get_video_comments(service, part=['snippet', 'replies'],
                                videoId=video_id, textFormat='plainText', maxResults=100)
-    write_to_csv(total)
+    #"Incorrect string value: '\\xF0\\x9F\\x99\\x87' for column 'comment' at row 89")
+    total_tolist = []
+    for x in total:
+        sublist = [x['authorDisplayName'], x['publishedAt'], x['textDisplay']]
+        if len(x) > 3:
+            key_count = 1
+            reply_str = ""
+            for key in x.keys():
+                if key_count > 3:
+                    reply_list = x[key].values()
+                    reply_str += ('-'.join(reply_list) + "|")
+                key_count += 1
+            sublist.append(reply_str)
+        else:
+            sublist.append(" ")
+        total_tolist.append(sublist)
+        for k in re.findall(r'[^\w\s,]', sublist[2]):
+            if is_emoji(k) is True:
+                sublist[2] = sublist[2].replace(k, "")
+
+        for b in re.findall(r'[^\w\s,]', sublist[3]):
+            if is_emoji(b) is True:
+                sublist[3] = sublist[3].replace(b, "")
+
+    mysql_connect(total_tolist)
+
+    #write_to_csv(total)
+    '''
     for x in total:
         print(x)
     print(len(total))
     '''
-    pd = pandas.read_csv("comments.csv", encoding='cp949', error_bad_lines=False)
-    test_db = pymysql.connect(
-        user='root',
-        passwd='',
-        host='localhost',
-        db='causw',
-        charset='utf8'
-    )
-    cursor = test_db.cursor(pymysql.cursors.DictCursor)
+    #pd = pandas.read_csv("comments.csv", encoding='cp949', error_bad_lines=False)
+
+
     '''
     sql = 'insert into causw.youtube_comment values (%s, %s, %s);'
     total_list = []
@@ -114,9 +165,7 @@ if __name__ == '__main__':
     cursor.executemany(sql, total_list)
     test_db.commit()
     '''
-    cursor.execute("select * from causw.youtube_comment;")
-    result = cursor.fetchall()
-    print(pandas.DataFrame(result))
+
 
 
 
@@ -125,6 +174,9 @@ if __name__ == '__main__':
 
 #BTS DYNAMAITE 10,000,000개 댓글 있음
 #https://youtu.be/gdZLi9oWNZg
+
+#침착맨 삼국지 1500개 댓글
+#https://youtu.be/hnanNlDbsE4
 '''
 from __future__ import print_function
 from googleapiclient.discovery import build
