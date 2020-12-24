@@ -13,7 +13,7 @@ import pymysql
 
 
 # your OAuth 2.0 client ID json file
-CLIENT_SECRETS_FILE = "client_secret_lsy.json"
+CLIENT_SECRETS_FILE = "client_secret.json"
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
