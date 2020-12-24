@@ -11,15 +11,22 @@ import re
 from emoji import UNICODE_EMOJI
 
 
-def is_emoji(s):
-    return s in UNICODE_EMOJI
-
-
 # your OAuth 2.0 client ID json file
 CLIENT_SECRETS_FILE = "client_secret_lsy.json"
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
 API_SERVICE_NAME = 'youtube'
 API_VERSION = 'v3'
+
+
+def is_emoji(s):
+    return s in UNICODE_EMOJI
+
+
+def remove_emoji(text):
+    for char in re.findall(r'[^\w\s,]', text):
+        if is_emoji(char) is True:
+            text = text.replace(char, "")
+    return text
 
 
 def get_authenticated_service():
@@ -105,6 +112,7 @@ def mysql_connect(data):
         cursor = test_db.cursor(pymysql.cursors.DictCursor)
         cursor.execute("select count(*) as num from causw.youtube_comment;")
         if cursor.fetchall()[0]['num'] == 0:
+            print("come in!")
             sql = 'insert into causw.youtube_comment values (%s, %s, %s, %s);'
             cursor.executemany(sql, data)
             test_db.commit()
@@ -113,17 +121,9 @@ def mysql_connect(data):
         print(pandas.DataFrame(result))
 
 
-if __name__ == '__main__':
-    # When running locally, disable OAuthlib's HTTPs verification. When
-    # running in production *do not* leave this option enabled.
-    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    service = get_authenticated_service()
-    video_id = input('Enter a video_id: ')
-    total = get_video_comments(service, part=['snippet', 'replies'],
-                               videoId=video_id, textFormat='plainText', maxResults=100)
-    #"Incorrect string value: '\\xF0\\x9F\\x99\\x87' for column 'comment' at row 89")
+def tolist(src):
     total_tolist = []
-    for x in total:
+    for x in src:
         sublist = [x['authorDisplayName'], x['publishedAt'], x['textDisplay']]
         if len(x) > 3:
             key_count = 1
@@ -136,37 +136,24 @@ if __name__ == '__main__':
             sublist.append(reply_str)
         else:
             sublist.append(" ")
+        sublist[2] = remove_emoji(sublist[2])
+        sublist[3] = remove_emoji(sublist[3])
         total_tolist.append(sublist)
-        for k in re.findall(r'[^\w\s,]', sublist[2]):
-            if is_emoji(k) is True:
-                sublist[2] = sublist[2].replace(k, "")
+    return total_tolist
 
-        for b in re.findall(r'[^\w\s,]', sublist[3]):
-            if is_emoji(b) is True:
-                sublist[3] = sublist[3].replace(b, "")
 
-    mysql_connect(total_tolist)
+if __name__ == '__main__':
+    # When running locally, disable OAuthlib's HTTPs verification. When
+    # running in production *do not* leave this option enabled.
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    service = get_authenticated_service()
+    video_id = input('Enter a video_id: ')
+    total = get_video_comments(service, part=['snippet', 'replies'],
+                               videoId=video_id, textFormat='plainText', maxResults=100)
+    mysql_connect(tolist(total))
 
     #write_to_csv(total)
-    '''
-    for x in total:
-        print(x)
-    print(len(total))
-    '''
     #pd = pandas.read_csv("comments.csv", encoding='cp949', error_bad_lines=False)
-
-
-    '''
-    sql = 'insert into causw.youtube_comment values (%s, %s, %s);'
-    total_list = []
-    for x in range(pd.shape[0]):
-        total_list.append(pd.iloc[x].tolist())
-    print(total_list)
-    cursor.executemany(sql, total_list)
-    test_db.commit()
-    '''
-
-
 
 
 # 여백의 미
@@ -177,26 +164,3 @@ if __name__ == '__main__':
 
 #침착맨 삼국지 1500개 댓글
 #https://youtu.be/hnanNlDbsE4
-'''
-from __future__ import print_function
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from oauth2client.tools import argparser
-
-DEVELOPER_KEY = "mykey"
-YOUTUBE_API_SERVICE_NAME = "youtube"
-YOUTUBE_API_VERSION = "v3"
-youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
-
-search_response = youtube.search().list(
-    q="김도랜드",
-    order="date",
-    part="snippet",
-    maxResults=50#max is 50
-).execute()
-
-count = 0
-for i in search_response['items']:
-    print(i['snippet']['title'])
-    print("##################################")
-'''
