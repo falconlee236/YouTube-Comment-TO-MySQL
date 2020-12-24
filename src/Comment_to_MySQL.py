@@ -1,14 +1,15 @@
 import pickle
 import os
-import csv
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import pandas
 import pymysql
 import json
+from collections import OrderedDict
 import re
 from emoji import UNICODE_EMOJI
+import getpass
 
 
 # your OAuth 2.0 client ID json file
@@ -54,11 +55,8 @@ def get_authenticated_service():
 def get_video_comments(f_service, **kwargs):
     comment_list = []
     results = f_service.commentThreads().list(**kwargs).execute()
-    count = 1
     while results:
         for item in results['items']:
-            print(count)
-            count += 1
             comments = {}
             comment = item['snippet']['topLevelComment']['snippet']['authorDisplayName']
             comment2 = item['snippet']['topLevelComment']['snippet']['publishedAt']
@@ -89,36 +87,62 @@ def get_video_comments(f_service, **kwargs):
     return comment_list
 
 
-def write_to_csv(comments):
-    with open('comments.csv', 'w') as comments_file:
-        comments_writer = csv.writer(comments_file, newline='', delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        comments_writer.writerow(['Video ID', 'Date', 'Comment'])
-        for row in comments:
-            comments_writer.writerow(row.values())
+def make_auth():
+    if os.path.exists('MySQL_Auth.json'):
+        with open('MySQL_Auth.json') as auth_file:
+            auth = json.load(auth_file)
+    else:
+        user = input("Your user name? Ex) root : ")
+        passwd = getpass.getpass("Your user passwd? Ex) 123456 : ")
+        host = input("Your host name? Ex) localhost : ")
+        database = input("Your Database Schema name? Ex) sys : ")
+        charset = input("charset of Database Schema? Ex) utf8 : ")
+
+        auth_data = OrderedDict()
+        auth_data["user"] = user
+        auth_data["passwd"] = passwd
+        auth_data["host"] = host
+        auth_data["db"] = database
+        auth_data["charset"] = charset
+
+        with open('MySQL_Auth.json', 'w') as auth_file:
+            json.dump(auth_data, auth_file, ensure_ascii=False, indent="\t")
+            auth = auth_data
+
+    return auth
 
 
 def mysql_connect(data):
-    with open('MySQL_Auth.json') as auth_file:
-        mysql_auth = json.load(auth_file)
+    mysql_auth = make_auth()
 
-        test_db = pymysql.connect(
-            user=mysql_auth["user"],
-            passwd=mysql_auth["passwd"],
-            host=mysql_auth["host"],
-            db=mysql_auth["db"],
-            charset=mysql_auth["charset"]
-        )
+    test_db = pymysql.connect(
+        user=mysql_auth["user"],
+        passwd=mysql_auth["passwd"],
+        host=mysql_auth["host"],
+        db=mysql_auth["db"],
+        charset=mysql_auth["charset"]
+    )
 
-        cursor = test_db.cursor(pymysql.cursors.DictCursor)
-        cursor.execute("select count(*) as num from causw.youtube_comment;")
-        if cursor.fetchall()[0]['num'] == 0:
-            print("come in!")
-            sql = 'insert into causw.youtube_comment values (%s, %s, %s, %s);'
-            cursor.executemany(sql, data)
-            test_db.commit()
-        cursor.execute("select * from causw.youtube_comment;")
-        result = cursor.fetchall()
-        print(pandas.DataFrame(result))
+    table = input("Your Table Name? : ")
+    cursor = test_db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(f"select count(*) as num from {table};")
+    if cursor.fetchall()[0]['num'] == 0:
+        sql = f'insert into {table} values (%s, %s, %s, %s);'
+        cursor.executemany(sql, data)
+        while True:
+            check = input("Do you want to save your changes? (y/n) : ")
+            if check == 'y' or check == 'Y':
+                test_db.commit()
+                print("commit Successfully!")
+                break
+            elif check != 'n' or check == 'N':
+                print("Write correct answer y or n")
+
+    cursor.execute(f"select * from {table};")
+    result = cursor.fetchall()
+    print()
+    print()
+    print(pandas.DataFrame(result))
 
 
 def tolist(src):
@@ -151,9 +175,6 @@ if __name__ == '__main__':
     total = get_video_comments(service, part=['snippet', 'replies'],
                                videoId=video_id, textFormat='plainText', maxResults=100)
     mysql_connect(tolist(total))
-
-    #write_to_csv(total)
-    #pd = pandas.read_csv("comments.csv", encoding='cp949', error_bad_lines=False)
 
 
 # 여백의 미
