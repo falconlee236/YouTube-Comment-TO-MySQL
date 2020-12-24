@@ -8,7 +8,7 @@ This program's Result is stored into MySQL table schema
 
 ## Code style
 
-![python code style](https://img.shields.io/badge/code style-PEP 8-brightgreen)
+![python code style](https://img.shields.io/badge/codestyle-PEP8-brightgreen)
 
 
 
