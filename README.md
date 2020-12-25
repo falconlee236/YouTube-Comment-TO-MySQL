@@ -55,8 +55,38 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 ## Installation
 
 1. clone this repository to local
-2. issue your own OAuth 2.0 Client ID json file <a href="https://github.com/falconlee236/YouTube-Comment-TO-MySQL/tree/master/docs/GuideLine.md "  target="_blank">Guideline</a>
-3. 
+
+2. issue your own OAuth 2.0 Client ID json file >>> <a href="https://github.com/falconlee236/YouTube-Comment-TO-MySQL/tree/master/docs/GuideLine.md "  target="_blank">Issue Guideline</a>
+
+3. Rename OAuth json file to `client_secret.json`
+
+4. In Terminal, Change your main directory and write this code
+
+   ```python
+   > python src\Comment_to_MySQL.py
+   Enter a video_id : #Enter target video id
+   '''
+   if your target youtube address is https://www.youtube.com/watch?v=YWt4wmZ_EMI
+   you should put target video id YWt4wmZ_EMI
+   '''
+   ```
+
+5. IF Authorization is successfully, You will see 
+   `"Please visit this URL to authorize this application : ~~~~~~~~"``
+   ``"Enter the authorization code :"` 
+   After visit that URL and Complete Authorization, get authorization code and enter the code
+
+6. IF You execute program first, You will enter MySQL info to connect DB
+
+   ```python
+   Your user name? Ex) root : 
+   Your user passwd? Ex) 123456 : 
+   Your host name? Ex) localhost : 
+   Your Database Schema name? Ex) sys :
+   charset of Database Schema? Ex) utf8 : 
+   ```
+
+   After that, the json file is made in local repository, `MySQL_Auth.json`
 
 Provide step by step series of examples and explanations about how to get a development env running.
 

@@ -177,6 +177,7 @@ if __name__ == '__main__':
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     service = get_authenticated_service()
     video_id = input('Enter a video_id: ')
+    print()
     total = get_video_comments(service, part=['snippet', 'replies'],
                                videoId=video_id, textFormat='plainText', maxResults=100)
     mysql_connect(tolist(total))
