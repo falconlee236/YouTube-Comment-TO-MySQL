@@ -74,7 +74,7 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 5. IF Authorization is successfully, You will see 
    `"Please visit this URL to authorize this application : ~~~~~~~~"`
 
-   ``"Enter the authorization code :"` 
+   `"Enter the authorization code :"` 
    After visit that URL and Complete Authorization, get authorization code and enter the code
 
 6. IF You execute program first, You will enter MySQL info to connect DB
