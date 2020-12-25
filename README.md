@@ -41,7 +41,7 @@ This program using Youtube API crawls **much more youtube video comment** than u
 | [Left] using selenium and chromedriver                      | [Right] using youtube API and MySQL                          |
 | ----------------------------------------------------------- | ------------------------------------------------------------ |
 | Max comment = 1500 <br />total video's comment = 15,000,000 | Max comment = up to 15,000,000 <br />total video's comment = 15,000,000 |
-| <img src="./img/graph.PNG" alt="LEFT" style="zoom:75%;" />  | <img src="C:\Users\user\Desktop\korean_comment\img\Comment_in_MySQL.PNG" alt="Comment_in_MySQL" style="zoom:90%;" /> |
+| <img src="./img/graph.PNG" alt="LEFT" style="zoom:75%;" />  | <img src="./img/Comment_in_MySQL.PNG" alt="Comment_in_MySQL" style="zoom:90%;" /> |
 
 This program is slower than the way to selenium crawling But more precise than that way
 
