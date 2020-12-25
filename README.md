@@ -55,12 +55,8 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 ## Installation
 
 1. clone this repository to local
-
-2. issue your own OAuth 2.0 Client ID json file (
-
-   [Guideline]: https://github.com/falconlee236/YouTube-Comment-TO-MySQL/tree/master/docs/GuideLine.md
-
-   )
+2. issue your own OAuth 2.0 Client ID json file <a href="https://github.com/falconlee236/YouTube-Comment-TO-MySQL/tree/master/docs/GuideLine.md "  target="_blank">Guideline</a>
+3. 
 
 Provide step by step series of examples and explanations about how to get a development env running.
 
