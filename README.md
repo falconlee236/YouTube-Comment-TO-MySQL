@@ -104,3 +104,16 @@ If people like your project they’ll want to learn how they can use it. To do s
 
 
 
+## Contact
+
+Naver= falconlee236@naver.com
+
+Google= hermit236@gmail.com
+
+IF you find error code, plz contact upper email address or Issue or pull request or fork
+
+
+
+PLZ STAR AND FORK!!!!!!!!!!
+
+Welcome for contribution
