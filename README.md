@@ -36,7 +36,16 @@ Using this data and list, I Insert this data into MySQL table,
 
 ## Features
 
-What makes your project stand out?
+This program using Youtube API crawls **much more youtube video comment** than using selenium and beautifulsoup python module.
+
+| [Left] using selenium and chromedriver                      | [Right] using youtube API and MySQL                          |
+| ----------------------------------------------------------- | ------------------------------------------------------------ |
+| Max comment = 1500 <br />total video's comment = 15,000,000 | Max comment = up to 15,000,000 <br />total video's comment = 15,000,000 |
+| <img src="./img/graph.PNG" alt="LEFT" style="zoom:75%;" />  | <img src="C:\Users\user\Desktop\korean_comment\img\Comment_in_MySQL.PNG" alt="Comment_in_MySQL" style="zoom:90%;" /> |
+
+This program is slower than the way to selenium crawling But more precise than that way
+
+If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Scientist and Data Analyst** , You must need to this program to use much many youtube comment data and to analyze youtube environment.
 
 
 
@@ -55,12 +64,6 @@ Provide step by step series of examples and explanations about how to get a deve
 ## API Reference
 
 Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
-
-
-
-## Tests
-
-Describe and show how to run the tests with code examples.
 
 
 
