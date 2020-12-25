@@ -76,14 +76,12 @@ def get_video_comments(f_service, **kwargs):
                     comments["reply_comment" + str(i + 1)] = rep_comments
 
             comment_list.append(comments)
-
         # Check if another page exists
         if 'nextPageToken' in results:
             kwargs['pageToken'] = results['nextPageToken']
             results = f_service.commentThreads().list(**kwargs).execute()
         else:
             break
-
     return comment_list
 
 
@@ -125,6 +123,11 @@ def mysql_connect(data):
 
     table = input("Your Table Name? : ")
     cursor = test_db.cursor(pymysql.cursors.DictCursor)
+    cursor.execute(f"create table if not exists {table}("
+                   f"Video_ID varchar(120),"
+                   f"Date varchar(120),"
+                   f"Comment longtext,"
+                   f"Reply longtext);")
     cursor.execute(f"select count(*) as num from {table};")
     if cursor.fetchall()[0]['num'] == 0:
         sql = f'insert into {table} values (%s, %s, %s, %s);'
@@ -135,7 +138,9 @@ def mysql_connect(data):
                 test_db.commit()
                 print("commit Successfully!")
                 break
-            elif check != 'n' or check == 'N':
+            elif check == 'n' or check == 'N':
+                break
+            else:
                 print("Write correct answer y or n")
 
     cursor.execute(f"select * from {table};")
