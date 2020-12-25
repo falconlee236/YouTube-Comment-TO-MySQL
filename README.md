@@ -23,6 +23,9 @@ Using this data and list, I Insert this data into MySQL table,
 
 
 ## Prerequisite Module
+
+You can use **requirments.txt** to install necessary module simply.
+
 ![emoji version](https://img.shields.io/badge/emoji-v0.6.0-brightgreen)  
 ![google-auth-oauthlib version](https://img.shields.io/badge/google--auth--oauthlib-v0.4.2-red)  
 ![google--api--python--client version](https://img.shields.io/badge/google--api--python--client-v1.12.8-orange)  
@@ -49,13 +52,10 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 
 
 
-## Code Example
-
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
-
-
-
 ## Installation
+
+1. clone this repository to local
+2. issue your own OAuth 2.0 Client ID
 
 Provide step by step series of examples and explanations about how to get a development env running.
 
