@@ -87,12 +87,14 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
    ```
 
    After that, the json file is made in local repository, `MySQL_Auth.json`
+   
+7. 
 
 
 
 ## API Reference
 
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
+Go to this page >>> <a href="https://github.com/falconlee236/YouTube-Comment-TO-MySQL/tree/master/docs/Youtube v3 API.md "  target="_blank">API Reference</a>
 
 
 
