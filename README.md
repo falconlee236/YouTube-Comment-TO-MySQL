@@ -64,7 +64,7 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 
    ```python
    > python src\Comment_to_MySQL.py
-   Enter a video_id : #Enter target video id
+   "Enter a video_id" : #Enter target video id
    '''
    if your target youtube address is https://www.youtube.com/watch?v=YWt4wmZ_EMI
    you should put target video id YWt4wmZ_EMI
@@ -72,23 +72,22 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
    ```
 
 5. IF Authorization is successfully, You will see 
-   `"Please visit this URL to authorize this application : ~~~~~~~~"``
+   `"Please visit this URL to authorize this application : ~~~~~~~~"`
+
    ``"Enter the authorization code :"` 
    After visit that URL and Complete Authorization, get authorization code and enter the code
 
 6. IF You execute program first, You will enter MySQL info to connect DB
 
    ```python
-   Your user name? Ex) root : 
-   Your user passwd? Ex) 123456 : 
-   Your host name? Ex) localhost : 
-   Your Database Schema name? Ex) sys :
-   charset of Database Schema? Ex) utf8 : 
+   "Your user name? Ex) root : "
+   "Your user passwd? Ex) 123456 : "
+   "Your host name? Ex) localhost : "
+   "Your Database Schema name? Ex) sys : "
+   "charset of Database Schema? Ex) utf8 : "
    ```
 
    After that, the json file is made in local repository, `MySQL_Auth.json`
-
-Provide step by step series of examples and explanations about how to get a development env running.
 
 
 
