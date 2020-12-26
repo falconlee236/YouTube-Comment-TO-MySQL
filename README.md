@@ -96,7 +96,7 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 
 ## API Reference
 
-Go to this page >>> <a href="https://github.com/falconlee236/YouTube-Comment-TO-MySQL/tree/master/docs/Youtube v3 API.md "  target="_blank">API Reference</a>
+Go to this page >>> <a href="https://google-api-client-libraries.appspot.com/documentation/youtube/v3/python/latest/"  target="_blank">API Reference</a>
 
 
 
