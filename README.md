@@ -88,7 +88,9 @@ If you're using **Bigdata and Artificial Intelligence** or if you're a **Data Sc
 
    After that, the json file is made in local repository, `MySQL_Auth.json`
    
-7. 
+7. After connecting MySQL and python, program needs to find table name. if there is existing DB table in local, DO NOT execute create table query.  But Do not exist, Create Table You are typing name in program
+
+8. Do you want to save comment result, put in "y" when this code to see `Do you want to save your changes? (y/n) : `
 
 
 
