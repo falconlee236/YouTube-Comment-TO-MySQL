@@ -100,12 +100,6 @@ Go to this page >>> <a href="https://github.com/falconlee236/YouTube-Comment-TO-
 
 
 
-## How to use?
-
-If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.
-
-
-
 ## Contact
 
 Naver= falconlee236@naver.com
