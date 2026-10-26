@@ -1,5 +1,5 @@
 cachetools==4.2.0
-certifi==2024.7.4
+certifi==2026.10.19
 chardet==4.0.0
 emoji==0.6.0
 google-api-core==1.24.1
